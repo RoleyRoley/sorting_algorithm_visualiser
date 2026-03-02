@@ -7,19 +7,28 @@ list_to_sort = [64, 34, 25, 12, 22, 11, 90, 23, 45, 67]
 
 plt.style.use('_mpl-gallery')
 
-# make data:
-x = 0.5 + np.arange(10)
-y = list_to_sort
+# function to show the graph of the sorted list
 
-# plot
-fig, ax = plt.subplots()
+def show_graph(data):
+    # make data
+    x = np.arange(len(data))
+    y = data
 
-ax.bar(x, y, width=1, edgecolor="white", linewidth=0.7)
+    # plot
+    fig, ax = plt.subplots()
 
-ax.set(xlim=(0, 10), xticks=np.arange(1, 10),
-       ylim=(0, 10), yticks=np.arange(1, 10))
+    # bar style
+    ax.bar(x, y, width=1, edgecolor="white", linewidth=0.7)
 
-plt.show()
+    # set x-ticks labels
+    x_labels = data
+
+    ax.set_xticks(x)
+    ax.set_xticklabels(x_labels)
+
+    plt.show()
+
+
 
 print("Which sortingalgorithm do you want to use?")
 print("1. Bubble Sort")
@@ -38,19 +47,21 @@ class SortingAlgorithm:
         n = len(self.arr)
         while True:
             arr_swapped = False
-            # Iterating through array until the second to last index
+            # iterating through array until the second to last index
             for i in range(len(self.arr)-1):
-                # Swapping values if the current value is greater than the next value
+                # swapping values if the current value is greater than the next value
                 if self.arr[i] > self.arr[i+1]:
                     self.arr[i], self.arr[i+1] = self.arr[i+1], self.arr[i]
-                    arr_swapped = True
+                    arr_swapped = True   
             if not arr_swapped:
                 return self.arr
-                
+            
 
         
 if user_choice == "1":
     sorting_algorithm = SortingAlgorithm(list_to_sort)
     sorted_list = sorting_algorithm.bubble_sort()
     print("Sorted list:", sorted_list)
+    show_graph(sorted_list)
+   
     

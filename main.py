@@ -77,13 +77,14 @@ def visualise_sort(data, steps_func, interval=visual_speed, title="Sorting Algor
 
 
 
-print("Which sorting algorithm do you want to use?")
+print("\nWhich sorting algorithm do you want to use?\n")
+print(f"Number of elements to sort: {len(list_to_sort)}\n")
 print("1. Bubble Sort")
 print("2. Insertion Sort")
 print("3. Selection Sort")
 print("4. Merge Sort")
 print("5. Quick Sort")
-print(len(list_to_sort))
+
 
 
 user_choice = input("Enter the number corresponding to your choice: ")
@@ -125,12 +126,65 @@ class SortingAlgorithm:
                 # print(f"Bubble Sort took {end_time - start_time:.6f} seconds")
                 return 
             
+    def insertion_sort(self, data):
+        start_time = time.perf_counter()
+        # Create copy of original array
+        a = data[:]
             
+        swap_counter = 0
+        
+        # Iterating through array starting from the second element
+        for i in range(1, len(a)):
+            key = a[i]
+            j = i - 1
+            # j is the index of the last element in the sorted portion of the array. We compare it with the key and shift elements to the right until we find the correct position for the key.
+            while j >= 0 and a[j] > key:
+                yield a, (j, j + 1), swap_counter, None
+                a[j + 1] = a[j]
+                swap_counter += 1
+                yield a, (j, j + 1), swap_counter, None
+                # Shift the index to the left
+                j -= 1
+            # Place the key in its correct position
+            a[j + 1] = key
+            yield a, (j + 1, i), swap_counter, None
 
+        # End timer
+        end_time = time.perf_counter()
+        # Yield the final state of the array, None for active indices, the total swap count, and the elapsed time
+        yield a, None, swap_counter, (end_time - start_time)
+        
+        # print(f"Total swaps: {swap_counter}")
+        # print(f"Insertion Sort took {end_time - start_time:.6f} seconds")
+        return
+                
+            
+                
+            
+            
+# Handling user choice.
         
 if user_choice == "1":
     
     sorting_algorithm = SortingAlgorithm(list_to_sort)
     visualise_sort(list_to_sort, sorting_algorithm.bubble_sort, interval=visual_speed, title="Bubble Sort")
+    
+if user_choice == "2":
+    
+    sorting_algorithm = SortingAlgorithm(list_to_sort)
+    visualise_sort(list_to_sort, sorting_algorithm.insertion_sort, interval=visual_speed, title="Insertion Sort")
+    
+if user_choice == "3":
+    sorting_algorithm = SortingAlgorithm(list_to_sort)
+    visualise_sort(list_to_sort, sorting_algorithm.selection_sort, interval=visual_speed, title="Selection Sort")
+    
+if user_choice == "4":
+    sorting_algorithm = SortingAlgorithm(list_to_sort)
+    visualise_sort(list_to_sort, sorting_algorithm.merge_sort, interval=visual_speed, title="Merge Sort")
+    
+if user_choice == "5":
+    sorting_algorithm = SortingAlgorithm(list_to_sort)
+    visualise_sort(list_to_sort, sorting_algorithm.quick_sort, interval=visual_speed, title="Quick Sort")
+    
    
     

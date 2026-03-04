@@ -189,7 +189,48 @@ class SortingAlgorithm:
         
                 
     def merge_sort(self, data):
-        pass
+        start_time = time.perf_counter()
+        # Create copy of original array
+        a = data[:]
+        swap_counter = 0
+        
+        if len(a) <= 1:
+            return a
+        
+        if len(a) > 1:
+            # Split array into 2 halves.
+            midpoint = int(len(a) / 2)
+            lefthalf = a[0 : midpoint]
+            righthalf = a[midpoint :]
+            
+            
+            
+            sorted_left = self.merge_sort(lefthalf)
+            sorted_right = self.merge_sort(righthalf)
+            
+            i = 0
+            j = 0
+            k = 0
+            
+            while i < len(lefthalf) and j < len(righthalf):
+                if lefthalf[i] < righthalf[j]:
+                    a[k] = lefthalf[i]
+                    i = i + 1
+                else:
+                    a[k] = righthalf[j]
+                    j = j + 1
+                k = k + 1
+                    
+            if lefthalf > righthalf:
+                merged_list = sorted_left + sorted_right
+                a = merged_list 
+            else:
+                merged_list = sorted_right + sorted_left
+                a = merged_list
+            return 
+            
+            
+            
             
 # Handling user choice.
         

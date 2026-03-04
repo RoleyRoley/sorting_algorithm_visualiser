@@ -157,10 +157,39 @@ class SortingAlgorithm:
         # print(f"Total swaps: {swap_counter}")
         # print(f"Insertion Sort took {end_time - start_time:.6f} seconds")
         return
-                
+    
+    def selection_sort(self, data):
+        start_time = time.perf_counter()
+        # Create copy of original array
+        a = data[:]
+        swap_counter = 0
+        
+        
+        # Iternating through the array
+        for i in range(len(a) - 1):
+            min_idx = i
+            # for each index after the starting index, we compare it with the current minimum index and update the minimum index if we find a smaller value. 
+            for j in range(i + 1, len(a)):
+                yield a, (min_idx, j), swap_counter, None
+                # If index after starting index is less than starting index value, update minimum index
+                if a[j] < a[min_idx]:
+                    min_idx = j
             
+            # if min_idx is not the same as the starting index, swap the values and update the swap counter
+            if min_idx != i:
+                a[i], a[min_idx] = a[min_idx], a[i]
+                swap_counter += 1
+                yield a, (i, min_idx), swap_counter, None
+                    
+       
+        end_time = time.perf_counter()
+        # Yield the final state of the array, None for active indices, the total swap count, and the elapsed time
+        yield a, None, swap_counter, (end_time - start_time)
+        return
+        
                 
-            
+    def merge_sort(self, data):
+        pass
             
 # Handling user choice.
         

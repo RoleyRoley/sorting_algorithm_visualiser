@@ -193,43 +193,60 @@ class SortingAlgorithm:
         # Create copy of original array
         a = data[:]
         swap_counter = 0
-        
-        if len(a) <= 1:
-            return a
-        
-        if len(a) > 1:
-            # Split array into 2 halves.
-            midpoint = int(len(a) / 2)
-            lefthalf = a[0 : midpoint]
-            righthalf = a[midpoint :]
-            
-            
-            
-            sorted_left = self.merge_sort(lefthalf)
-            sorted_right = self.merge_sort(righthalf)
-            
+
+        # Function that takes two parameters, left and right, which represent the indices of the portion of the array being sorted. 
+        def merge_sort_recursive(left, right):
+            nonlocal swap_counter
+
+            # if right - left is less than or equal to 1, it means that the portion of the array being sorted has one or zero elements, which is already sorted, so we return.
+            if right - left <= 1:
+                return
+
+            # Calculate the midpoint index.
+            midpoint = int((left + right) / 2)
+
+            # Recursively call merge_sort_recursive on the left and right halves of the array. This will continue to divide the array until we reach the base case of one or zero elements.
+            yield from merge_sort_recursive(left, midpoint)
+            yield from merge_sort_recursive(midpoint, right)
+
+            # After the recursive calls, we have two sorted halves of the array. We then merge these halves together while keeping track of the swap count.
+            lefthalf = a[left : midpoint]
+            righthalf = a[midpoint : right]
             i = 0
             j = 0
-            k = 0
-            
+            k = left
+
             while i < len(lefthalf) and j < len(righthalf):
-                if lefthalf[i] < righthalf[j]:
+                yield a, (left + i, midpoint + j), swap_counter, None
+                if lefthalf[i] <= righthalf[j]:
                     a[k] = lefthalf[i]
                     i = i + 1
                 else:
                     a[k] = righthalf[j]
                     j = j + 1
+                swap_counter += 1
+                yield a, (k,), swap_counter, None
                 k = k + 1
-                    
-            if lefthalf > righthalf:
-                merged_list = sorted_left + sorted_right
-                a = merged_list 
-            else:
-                merged_list = sorted_right + sorted_left
-                a = merged_list
-            return 
-            
-            
+
+            while i < len(lefthalf):
+                a[k] = lefthalf[i]
+                i = i + 1
+                swap_counter += 1
+                yield a, (k,), swap_counter, None
+                k = k + 1
+
+            while j < len(righthalf):
+                a[k] = righthalf[j]
+                j = j + 1
+                swap_counter += 1
+                yield a, (k,), swap_counter, None
+                k = k + 1
+
+        yield from merge_sort_recursive(0, len(a))
+
+        end_time = time.perf_counter()
+        yield a, None, swap_counter, (end_time - start_time)
+        return
             
             
 # Handling user choice.

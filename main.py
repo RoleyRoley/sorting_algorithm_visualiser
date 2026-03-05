@@ -248,6 +248,50 @@ class SortingAlgorithm:
         yield a, None, swap_counter, (end_time - start_time)
         return
             
+    def quick_sort(self, data):
+        start_time = time.perf_counter()
+        # Create copy of original array
+        a = data[:]
+            
+        swap_counter = 0
+
+        def partition(low, high):
+            nonlocal swap_counter
+            # Select rightmost element
+            pivot = a[high]
+            # Index of smaller element
+            i = low - 1
+
+            # Iterate through the array from low to high - 1
+            for j in range(low, high):
+                yield a, (j, high), swap_counter, None
+                # If the current element is smaller than or equal to the pivot, we increment the index of the smaller element and swap it with the current element. This ensures that all elements less than or equal to the pivot are on the left side of the pivot.
+                if a[j] <= pivot:
+                    i = i + 1
+                    if i != j:
+                        a[i], a[j] = a[j], a[i]
+                        swap_counter += 1
+                        yield a, (i, j), swap_counter, None
+            # After the loop, we swap the pivot element with the element at index i + 1, which places the pivot in its correct position in the sorted array.
+            if i + 1 != high:
+                a[i + 1], a[high] = a[high], a[i + 1]
+                swap_counter += 1
+                yield a, (i + 1, high), swap_counter, None
+
+            return i + 1
+
+        # Recursive function that takes two parameters, low and high, which represent the indices of the portion of the array being sorted.
+        def quick_sort_recursive(low, high):
+            if low < high:
+                pivot_idx = yield from partition(low, high)
+                yield from quick_sort_recursive(low, pivot_idx - 1)
+                yield from quick_sort_recursive(pivot_idx + 1, high)
+
+        yield from quick_sort_recursive(0, len(a) - 1)
+
+        end_time = time.perf_counter()
+        yield a, None, swap_counter, (end_time - start_time)
+        return
             
 # Handling user choice.
         

@@ -6,7 +6,7 @@ import numpy as np
 
 import time
 
-# list_to_sort = [64, 34, 25, 12, 22, 11, 90, 23, 45, 67, 89, 34, 56, 78, 12, 34, 56, 78, 90, 23, 45, 67, 89, 34, 56, 78, 12, 34, 56, 78, 90, 23, 45, 67, 89]
+# Testing: list_to_sort = [64, 34, 25, 12, 22, 11, 90, 23, 45, 67, 89, 34, 56, 78, 12, 34, 56, 78, 90, 23, 45, 67, 89, 34, 56, 78, 12, 34, 56, 78, 90, 23, 45, 67, 89]
 list_to_sort = np.random.randint(1, 100, size=100).tolist()
 
 plt.style.use('_mpl-gallery')
@@ -154,8 +154,6 @@ class SortingAlgorithm:
         # Yield the final state of the array, None for active indices, the total swap count, and the elapsed time
         yield a, None, swap_counter, (end_time - start_time)
         
-        # print(f"Total swaps: {swap_counter}")
-        # print(f"Insertion Sort took {end_time - start_time:.6f} seconds")
         return
     
     def selection_sort(self, data):
@@ -168,7 +166,7 @@ class SortingAlgorithm:
         # Iternating through the array
         for i in range(len(a) - 1):
             min_idx = i
-            # for each index after the starting index, we compare it with the current minimum index and update the minimum index if we find a smaller value. 
+            # For each index after the starting index, we compare it with the current minimum index and update the minimum index if we find a smaller value. 
             for j in range(i + 1, len(a)):
                 yield a, (min_idx, j), swap_counter, None
                 # If index after starting index is less than starting index value, update minimum index
@@ -198,49 +196,52 @@ class SortingAlgorithm:
         def merge_sort_recursive(left, right):
             nonlocal swap_counter
 
-            # if right - left is less than or equal to 1, it means that the portion of the array being sorted has one or zero elements, which is already sorted, so we return.
+            # If right - left is less than or equal to 1, it means that the portion of the array being sorted has one or zero elements, which is already sorted, so we return.
             if right - left <= 1:
                 return
 
             # Calculate the midpoint index.
-            midpoint = int((left + right) / 2)
+            midpoint = (left + right) // 2
 
             # Recursively call merge_sort_recursive on the left and right halves of the array. This will continue to divide the array until we reach the base case of one or zero elements.
             yield from merge_sort_recursive(left, midpoint)
             yield from merge_sort_recursive(midpoint, right)
 
             # After the recursive calls, we have two sorted halves of the array. We then merge these halves together while keeping track of the swap count.
-            lefthalf = a[left : midpoint]
-            righthalf = a[midpoint : right]
-            i = 0
-            j = 0
-            k = left
-
-            while i < len(lefthalf) and j < len(righthalf):
-                yield a, (left + i, midpoint + j), swap_counter, None
-                if lefthalf[i] <= righthalf[j]:
-                    a[k] = lefthalf[i]
-                    i = i + 1
+            left_half = a[left:midpoint]
+            right_half = a[midpoint:right]
+            # Initialize pointers for left half, right half, and the main array
+            left_idx = 0
+            right_idx = 0
+            write_idx = left
+            
+            # Merge the two halves while keeping track of the swap count
+            while left_idx < len(left_half) and right_idx < len(right_half):
+                yield a, (left + left_idx, midpoint + right_idx), swap_counter, None
+                if left_half[left_idx] <= right_half[right_idx]:
+                    a[write_idx] = left_half[left_idx]
+                    left_idx += 1
                 else:
-                    a[k] = righthalf[j]
-                    j = j + 1
+                    a[write_idx] = right_half[right_idx]
+                    right_idx += 1
                 swap_counter += 1
-                yield a, (k,), swap_counter, None
-                k = k + 1
-
-            while i < len(lefthalf):
-                a[k] = lefthalf[i]
-                i = i + 1
+                yield a, (write_idx,), swap_counter, None
+                write_idx += 1
+            # If there are remaining elements in the left half, we add them to the main array and update the swap count accordingly.
+            while left_idx < len(left_half):
+                a[write_idx] = left_half[left_idx]
+                left_idx += 1
                 swap_counter += 1
-                yield a, (k,), swap_counter, None
-                k = k + 1
-
-            while j < len(righthalf):
-                a[k] = righthalf[j]
-                j = j + 1
+                yield a, (write_idx,), swap_counter, None
+                write_idx += 1
+            
+            # If there are remaining elements in the right half, we add them to the main array and update the swap count accordingly.
+            while right_idx < len(right_half):
+                a[write_idx] = right_half[right_idx]
+                right_idx += 1
                 swap_counter += 1
-                yield a, (k,), swap_counter, None
-                k = k + 1
+                yield a, (write_idx,), swap_counter, None
+                write_idx += 1
 
         yield from merge_sort_recursive(0, len(a))
 
